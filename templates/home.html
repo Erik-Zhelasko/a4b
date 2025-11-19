@@ -7,14 +7,30 @@
 
 <h2>Employees Overview</h2>
 
-<form method="get">
-    <input name="search" placeholder="Search name">
-    <button type="submit">Search</button>
+<form method="get" style="margin-bottom: 20px;">
+
+    <!-- Search -->
+    <input 
+        type="text" 
+        name="search" 
+        placeholder="Search name"
+        value="{{ search }}"
+    >
+
+    <!-- Department Dropdown -->
+    <select name="dept">
+        <option value="">All Departments</option>
+        {% for d in departments %}
+            <option value="{{ d }}" {% if selected_dept == d %}selected{% endif %}>
+                {{ d }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Apply Filters</button>
 </form>
 
-<p>
-    <a href="/logout">Logout</a>
-</p>
+<p><a href="/logout">Logout</a></p>
 
 <table border="1" cellpadding="6">
     <tr>
@@ -42,10 +58,14 @@
     {% endfor %}
 </table>
 
-<p>
-    <a href="/export/employees">Download CSV</a>
-</p>
 
+<div style="margin-top: 20px;">
+    <p>You are logged in as: <strong>{{ session.get('role') }}</strong></p>
+ {% if session.get("role") == "admin" %}
+    {% else %}
+        <p>Viewer Mode: Read-only access</p>
+    {% endif %}
+</div>
 
 </body>
 </html>
