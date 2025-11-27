@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Employee</title>
+</head>
+<body>
+
+<h2>Add New Employee</h2>
+
+<p><a href="/">Back to Employees Overview</a></p>
+
+{% for msg in get_flashed_messages() %}
+<p style="color:red;"><strong>{{ msg }}</strong></p>
+{% endfor %}
+
+<form method="POST">
+
+    <label>SSN:</label><br>
+    <input type="text" name="ssn" required><br><br>
+
+    <label>First Name:</label><br>
+    <input type="text" name="fname" required><br><br>
+
+    <label>Middle Initial:</label><br>
+    <input type="text" name="minit" maxlength="1" required><br><br>
+
+    <label>Last Name:</label><br>
+    <input type="text" name="lname" required><br><br>
+
+    <label>Birthdate:</label><br>
+    <input type="date" name="bdate"><br><br>
+
+    <label>Address:</label><br>
+    <input type="text" name="address"><br><br>
+
+    <label>Sex:</label><br>
+    <select name="sex">
+        <option value="">--None--</option>
+        <option value="M">M</option>
+        <option value="F">F</option>
+    </select><br><br>
+
+    <label>Salary:</label><br>
+    <input type="number" name="salary" step="0.01"><br><br>
+
+    <label>Supervisor SSN:</label><br>
+    <input type="text" name="super_ssn"><br><br>
+
+    <label>Department Number (Dno):</label><br>
+    <input type="number" name="dno" required><br><br>
+
+    <button type="submit">Add Employee</button>
+</form>
+
+</body>
+</html>

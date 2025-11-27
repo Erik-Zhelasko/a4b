@@ -1,29 +1,14 @@
-## Database Setup
+# 1. Setup environment (example)
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+# 2. Setup database (example)
+createdb my_company_db
+export DATABASE_URL="postgresql://user:pass@localhost/my_company_db"
+# 3. Load schema and your additions
 
-createdb company
+psql -d $DATABASE_URL -f company_v3.02.sql
+psql -d $DATABASE_URL -f team_setup.sql
 
-## Load Company Schema
-
-psql company < /path/to/company_v3.02.sql
-
-## Load team_setup_sql
-
-psql company < team_setup.sql
-
-
-## Admin login:
-
-username: admin
-password: admin123
-
-## Viewer login:
-
-username: viewer
-password: viewer123
-
-## Running the Application
-From inside the project folder, type 
-
-***python3 app.py***
-
-### then visit http://127.0.0.1:5000/
+# 4. Run the app
+python3 app.py
