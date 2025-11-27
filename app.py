@@ -148,10 +148,12 @@ def home():
     return render_template(
         "home.html",
         employees=employees,
-        departments=departments,   # NEW
-        selected_dept=dept,        # NEW
-        search=search              # so form remembers search
-    )
+        departments=departments,
+        selected_dept=dept,
+        search=search,
+        sort=sort  
+)
+
 
 # ---------------------------
 # PROJECTS ROUTE (A3)
@@ -381,7 +383,7 @@ def delete_employee(ssn):
             "have dependents, or are a manager/supervisor."
         )
         return redirect(f"/employee/{ssn}")
-        
+
 # ---------------------------
 # MANAGER OVERVIEW (A6)
 # ---------------------------

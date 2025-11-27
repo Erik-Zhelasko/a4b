@@ -13,6 +13,7 @@
 <!-- Link to A6 -->
 <p><a href="/manager_overview">View Manager Overview</a></p>
 
+<!-- FILTER FORM -->
 <form method="get" style="margin-bottom: 20px;">
 
     <!-- Search -->
@@ -34,6 +35,13 @@
     </select>
 
     <button type="submit">Apply Filters</button>
+</form>
+
+<form method="get" action="/export_employees">
+    <input type="hidden" name="search" value="{{ search }}">
+    <input type="hidden" name="dept" value="{{ selected_dept }}">
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <button type="submit">Export CSV</button>
 </form>
 
 <p><a href="/logout">Logout</a></p>
