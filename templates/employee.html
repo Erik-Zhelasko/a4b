@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employees Overview</title>
+</head>
+<body>
+
+<h2>Employees Overview</h2>
+
+
+<p><a href="/">Back to Home</a></p>
+
+<!-- Add Employee Button -->
+<form action="/employee/add" method="get" style="margin-bottom: 15px;">
+    <button type="submit">Add New Employee</button>
+</form>
+
+<!-- Link to A3 -->
+
+
+
+<table border="1" cellpadding="6">
+
+    {% for e in employees %}
+    <tr>
+        <td><a href="/employee/{{ e.ssn }}">{{ e.full_name }}</a></td>
+        <td>{{ e.ssn }}</td>
+        <td>{{ e.address }}</td>
+        <td>{{ e.sex }}</td>
+        <td>{{ e.salary }}</td>
+        <td>{{ e.super_ssn }}</td>
+        <td>{{ e.dno }}</td>
+        <td>{{ e.bdate }}</td>
+        <td>{{ e.empdate }}</td>
+
+    </tr>
+
+    {% endfor %}
+</table>
+
+<div style="margin-top: 20px;">
+    <p>You are logged in as: <strong>{{ session.get('role') }}</strong></p>
+
+    {% if session.get("role") != "admin" %}
+        <p>Viewer Mode: Read-only access</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

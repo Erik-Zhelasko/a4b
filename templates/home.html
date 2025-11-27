@@ -7,13 +7,13 @@
 
 <h2>Employees Overview</h2>
 
-<!-- Add Employee Button -->
-<form action="/employee/add" method="get" style="margin-bottom: 15px;">
-    <button type="submit">Add New Employee</button>
-</form>
+
 
 <!-- Link to A3 -->
 <p><a href="/projects">View Projects Overview</a></p>
+
+<!-- Link to A5 -->
+<p><a href="/employee">View Employee CRUD</a></p>
 
 <!-- Link to A6 -->
 <p><a href="/manager_overview">View Manager Overview</a></p>
@@ -62,7 +62,7 @@
 
     {% for e in employees %}
     <tr>
-        <td><a href="/employee/{{ e.ssn }}">{{ e.full_name }}</a></td>
+        <td><a>{{ e.full_name }}</a></td>
         <td>{{ e.dname }}</td>
         <td>{{ e.num_dependents }}</td>
         <td>{{ e.num_projects }}</td>
