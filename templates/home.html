@@ -7,6 +7,12 @@
 
 <h2>Employees Overview</h2>
 
+<!-- Link to A3 -->
+<p><a href="/projects">View Projects Overview</a></p>
+
+<!-- Link to A6 -->
+<p><a href="/manager_overview">View Manager Overview</a></p>
+
 <form method="get" style="margin-bottom: 20px;">
 
     <!-- Search -->
@@ -30,18 +36,25 @@
     <button type="submit">Apply Filters</button>
 </form>
 
+<form method="get" action="/export_employees">
+    <button type="submit">Export CSV</button>
+</form>
+
+
 <p><a href="/logout">Logout</a></p>
 
 <table border="1" cellpadding="6">
     <tr>
-        <th>Name 
+        <th>
+            Name 
             <a href="/?sort=name_asc">↑</a>
             <a href="/?sort=name_desc">↓</a>
         </th>
         <th>Department</th>
         <th>Dependents</th>
         <th>Projects</th>
-        <th>Total Hours
+        <th>
+            Total Hours
             <a href="/?sort=hours_asc">↑</a>
             <a href="/?sort=hours_desc">↓</a>
         </th>
@@ -49,7 +62,7 @@
 
     {% for e in employees %}
     <tr>
-        <td>{{ e.full_name }}</td>
+        <td><a href="/employee/{{ e.ssn }}">{{ e.full_name }}</a></td>
         <td>{{ e.dname }}</td>
         <td>{{ e.num_dependents }}</td>
         <td>{{ e.num_projects }}</td>
@@ -58,11 +71,10 @@
     {% endfor %}
 </table>
 
-
 <div style="margin-top: 20px;">
     <p>You are logged in as: <strong>{{ session.get('role') }}</strong></p>
- {% if session.get("role") == "admin" %}
-    {% else %}
+
+    {% if session.get("role") != "admin" %}
         <p>Viewer Mode: Read-only access</p>
     {% endif %}
 </div>

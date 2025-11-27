@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manager Overview</title>
+</head>
+<body>
+
+<h2>Manager Overview</h2>
+
+<p><a href="/">Back to Home</a></p>
+
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Department (Name & Number)</th>
+        <th>Manager</th>
+        <th>Employees in Dept</th>
+        <th>Total Hours</th>
+    </tr>
+
+    {% for row in overview %}
+    <tr>
+        <td>{{ row.dname }} ({{ row.dnumber }})</td>
+        <td>{{ row.manager_name }}</td>
+        <td>{{ row.num_employees }}</td>
+        <td>{{ row.total_hours }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div style="margin-top: 20px;">
+    <p>You are logged in as: <strong>{{ session.get('role') }}</strong></p>
+
+    {% if session.get("role") != "admin" %}
+        <p>Viewer Mode: Read-only access</p>
+    {% else %}
+        <p>Admin Mode</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

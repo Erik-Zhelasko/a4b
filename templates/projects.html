@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Projects Overview</title>
+</head>
+<body>
+
+<h2>Project Portfolio Summary</h2>
+
+<p><a href="/">Back to Home</a></p>
+
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Project Name</th>
+        <th>Department</th>
+
+        <th>
+            Headcount
+            <a href="/projects?sort=headcount_asc">↑</a>
+            <a href="/projects?sort=headcount_desc">↓</a>
+        </th>
+
+        <th>
+            Total Hours
+            <a href="/projects?sort=hours_asc">↑</a>
+            <a href="/projects?sort=hours_desc">↓</a>
+        </th>
+    </tr>
+
+    {% for p in projects %}
+    <tr>
+        <td><a href="/project/{{ p.pnumber }}">{{ p.pname }}</a></td>
+        <td>{{ p.department_name }}</td>
+        <td>{{ p.headcount }}</td>
+        <td>{{ p.total_hours }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- Access Information (same as home page) -->
+<div style="margin-top: 20px;">
+    <p>You are logged in as: <strong>{{ session.get('role') }}</strong></p>
+
+    {% if session.get("role") != "admin" %}
+        <p>Viewer Mode: Read-only access</p>
+    {% endif %}
+</div>
+
+</body>
+</html>
