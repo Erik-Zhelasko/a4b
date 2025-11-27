@@ -9,63 +9,42 @@
 
 <p><strong>SSN:</strong> {{ employee.ssn }}</p>
 <p><strong>Address:</strong> {{ employee.address }}</p>
-<p><strong>Salary:</strong> {{ employee.salary }}</p>
+<p><strong>Salary:</strong> ${{ employee.salary }}</p>
 <p><strong>Department #:</strong> {{ employee.dno }}</p>
 
 <p><a href="/">Back to Employees Overview</a></p>
 
-<h3>Dependents</h3>
+{% if delete_error %}
+<p style="color:red;"><strong>{{ delete_error }}</strong></p>
+{% endif %}
 
-<table border="1" cellpadding="6">
-    <tr>
-        <th>Name</th>
-        <th>Sex</th>
-        <th>Birthdate</th>
-        <th>Relationship</th>
-    </tr>
+{% for msg in get_flashed_messages() %}
+<p style="color:green;"><strong>{{ msg }}</strong></p>
+{% endfor %}
 
-    {% for d in dependents %}
-    <tr>
-        <td>{{ d.dependent_name }}</td>
-        <td>{{ d.sex }}</td>
-        <td>{{ d.bdate }}</td>
-        <td>{{ d.relationship }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<hr>
 
-<h3>Add / Update Dependent</h3>
+<h3>Edit Employee</h3>
 
-<form method="post">
-    <label>Name:</label><br>
-    <input type="text" name="dname" required><br><br>
+<form method="POST" action="/employee/{{ employee.ssn }}/edit">
+    <label>Address:</label><br>
+    <input type="text" name="address" value="{{ employee.address }}" required><br><br>
 
-    <label>Sex (M/F):</label><br>
-    <input type="text" name="sex" maxlength="1" required><br><br>
+    <label>Salary:</label><br>
+    <input type="number" name="salary" value="{{ employee.salary }}" required><br><br>
 
-    <label>Birthdate:</label><br>
-    <input type="date" name="bdate" required><br><br>
+    <label>Department Number (Dno):</label><br>
+    <input type="number" name="dno" value="{{ employee.dno }}" required><br><br>
 
-    <label>Relationship:</label><br>
-    <input type="text" name="relationship" required><br><br>
-
-    <button type="submit">Save Dependent</button>
+    <button type="submit">Save Changes</button>
 </form>
 
-<div style="margin-top: 20px;">
-    <p>You are logged in as: <strong>{{ session.get('role') }}</strong></p>
+<hr>
 
-    {% if session.get("role") == "admin" %}
-        <p>Admin Mode: You may add or update dependents.</p>
-    {% else %}
-        <p>Viewer Mode: You should not be able to access this page.</p>
-    {% endif %}
-</div>
-
-<h3>Import Dependents from Excel (.xlsx)</h3>
-<form action="/import_dependents" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" accept=".xlsx" required>
-    <button type="submit">Upload</button>
+<h3>Delete Employee</h3>
+<form method="POST" action="/employee/{{ employee.ssn }}/delete"
+      onsubmit="return confirm('Are you sure you want to delete this employee?');">
+    <button style="background:red; color:white;">Delete Employee</button>
 </form>
 
 </body>

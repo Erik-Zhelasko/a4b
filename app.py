@@ -95,7 +95,7 @@ def home():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    # NEW: Load department names for dropdown
+    # Load department names for dropdown
     cur.execute("SELECT dname FROM department ORDER BY dname;")
     departments = [row[0] for row in cur.fetchall()]
 
@@ -266,8 +266,60 @@ def project_detail(pnum):
         employees=employees
     )
 
+
 # ---------------------------
-# EMPLOYEE DETAIL ROUTE (A5)
+# ADD EMPLOYEE (A5 CREATE)
+# ---------------------------
+@app.route("/employee/add", methods=["GET", "POST"])
+@login_required
+@admin_required
+def add_employee():
+
+    if request.method == "POST":
+        ssn = request.form["ssn"]
+        fname = request.form["fname"]
+        minit = request.form["minit"]
+        lname = request.form["lname"]
+        bdate = request.form["bdate"] or None
+        address = request.form["address"] or None
+        sex = request.form["sex"] or None
+        salary = request.form["salary"] or None
+        super_ssn = request.form["super_ssn"] or None
+        dno = request.form["dno"]
+      
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        try:
+            cur.execute("""
+                INSERT INTO employee (
+                    ssn, fname, minit, lname, bdate, address, sex,
+                    salary, super_ssn, dno
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+            """, (ssn, fname, minit, lname, bdate, address, sex,
+                  salary, super_ssn, dno))
+
+            conn.commit()
+            flash("Employee added successfully!")
+            return redirect("/")
+
+        except psycopg2.errors.UniqueViolation:
+            conn.rollback()
+            flash("Error: SSN must be unique.")
+            return redirect("/employee/add")
+
+        except Exception as e:
+            conn.rollback()
+            flash(f"Error: {str(e)}")
+            return redirect("/employee/add")
+
+    return render_template("add_employee.html")
+
+
+# ---------------------------
+# VIEW EMPLOYEE (A5 READ)
 # ---------------------------
 @app.route("/employee/<string:ssn>")
 @login_required
@@ -277,7 +329,6 @@ def employee_management(ssn):
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    # Load employee
     cur.execute("""
         SELECT ssn, fname || ' ' || lname AS full_name, address, salary, dno
         FROM employee
@@ -288,26 +339,17 @@ def employee_management(ssn):
     if not employee:
         return "Employee not found", 404
 
-    # Load dependents
-    cur.execute("""
-        SELECT dependent_name, sex, bdate, relationship
-        FROM dependent
-        WHERE essn = %s
-        ORDER BY dependent_name;
-    """, (ssn,))
-    dependents = cur.fetchall()
-
-    message = session.pop("delete_error", None)
+    delete_error = session.pop("delete_error", None)
 
     return render_template(
         "employee_management.html",
         employee=employee,
-        dependents=dependents,
-        message=message
+        delete_error=delete_error
     )
 
-
-# Update Employee
+# ---------------------------
+# EDIT EMPLOYEE (A5 UPDATE)
+# ---------------------------
 @app.route("/employee/<string:ssn>/edit", methods=["POST"])
 @login_required
 @admin_required
@@ -327,41 +369,12 @@ def edit_employee(ssn):
     """, (address, salary, dno, ssn))
 
     conn.commit()
-
     flash("Employee updated successfully!")
     return redirect(f"/employee/{ssn}")
 
-
-# Add / Update Dependent
-@app.route("/employee/<string:ssn>/dependent", methods=["POST"])
-@login_required
-@admin_required
-def add_or_update_dependent(ssn):
-
-    dname = request.form["dname"]
-    sex = request.form["sex"]
-    bdate = request.form["bdate"]
-    relationship = request.form["relationship"]
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute("""
-        INSERT INTO dependent (essn, dependent_name, sex, bdate, relationship)
-        VALUES (%s, %s, %s, %s, %s)
-        ON CONFLICT (essn, dependent_name)
-        DO UPDATE SET sex = EXCLUDED.sex,
-                      bdate = EXCLUDED.bdate,
-                      relationship = EXCLUDED.relationship;
-    """, (ssn, dname, sex, bdate, relationship))
-
-    conn.commit()
-
-    flash("Dependent saved.")
-    return redirect(f"/employee/{ssn}")
-
-
-# Delete Employee (with RESTRICT error handling)
+# ---------------------------
+# DELETE EMPLOYEE (A5 DELETE)
+# ---------------------------
 @app.route("/employee/<string:ssn>/delete", methods=["POST"])
 @login_required
 @admin_required
@@ -373,16 +386,17 @@ def delete_employee(ssn):
     try:
         cur.execute("DELETE FROM employee WHERE ssn = %s;", (ssn,))
         conn.commit()
-        flash("Employee deleted successfully.")
+        flash("Employee deleted.")
         return redirect("/")
 
     except psycopg2.errors.ForeignKeyViolation:
         conn.rollback()
         session["delete_error"] = (
             "Cannot delete employee: They are still assigned to projects, "
-            "have dependents, or are a manager/supervisor."
+            "have dependents listed, or are a manager/supervisor."
         )
         return redirect(f"/employee/{ssn}")
+
 
 # ---------------------------
 # MANAGER OVERVIEW (A6)

@@ -7,13 +7,17 @@
 
 <h2>Employees Overview</h2>
 
+<!-- Add Employee Button -->
+<form action="/employee/add" method="get" style="margin-bottom: 15px;">
+    <button type="submit">Add New Employee</button>
+</form>
+
 <!-- Link to A3 -->
 <p><a href="/projects">View Projects Overview</a></p>
 
 <!-- Link to A6 -->
 <p><a href="/manager_overview">View Manager Overview</a></p>
 
-<!-- FILTER FORM -->
 <form method="get" style="margin-bottom: 20px;">
 
     <!-- Search -->
@@ -35,13 +39,6 @@
     </select>
 
     <button type="submit">Apply Filters</button>
-</form>
-
-<form method="get" action="/export_employees">
-    <input type="hidden" name="search" value="{{ search }}">
-    <input type="hidden" name="dept" value="{{ selected_dept }}">
-    <input type="hidden" name="sort" value="{{ sort }}">
-    <button type="submit">Export CSV</button>
 </form>
 
 <p><a href="/logout">Logout</a></p>
